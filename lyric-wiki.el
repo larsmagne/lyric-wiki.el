@@ -39,12 +39,15 @@
     "http://lyrics.wikia.com/api.php?func=getSong&artist=%s&song=%s&fmt=xml"
     (lyric-wiki-encode artist)
     (lyric-wiki-encode track))
-   (lambda (&rest args)
+   (lambda (status artist track)
      (when (search-forward "\n\n" nil t)
        (let* ((data (libxml-parse-xml-region (point) (point-max)))
 	      (url (nth 2 (assq 'url data))))
 	 (kill-buffer (current-buffer))
-	 (url-retrieve url 'lyric-wiki-scrape-html))))))
+	 (if (not (nth 2 (assq 'page_id data)))
+	     (message "Found no match for %s/%s" artist track)
+	   (url-retrieve url 'lyric-wiki-scrape-html)))))
+   (list artist track)))
 
 (defun lyric-wiki-encode (string)
   (mm-url-form-encode-xwfu (encode-coding-string string 'utf-8)))
