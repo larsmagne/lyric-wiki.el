@@ -23,6 +23,9 @@
 
 ;;; Commentary:
 
+;; Usage:
+;; (lyric-wiki-fetch-lyrics "Joni Mitchell" "Blue")
+
 ;;; Code:
 
 (require 'cl)
@@ -34,12 +37,16 @@
   (url-retrieve
    (format
     "http://lyrics.wikia.com/api.php?func=getSong&artist=%s&song=%s&fmt=xml"
-    artist track)
+    (lyric-wiki-encode artist)
+    (lyric-wiki-encode track))
    (lambda (&rest args)
      (when (search-forward "\n\n" nil t)
        (let* ((data (libxml-parse-xml-region (point) (point-max)))
 	      (url (nth 2 (assq 'url data))))
 	 (url-retrieve url 'lyric-wiki-scrape-html))))))
+
+(defun lyric-wiki-encode (string)
+  (mm-url-form-encode-xwfu (encode-coding-string string 'utf-8)))
 
 (defun lyric-wiki-scrape-html (&rest args)
   (when (search-forward "\n\n" nil t)
