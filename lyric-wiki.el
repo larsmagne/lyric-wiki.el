@@ -58,13 +58,15 @@
 		 (libxml-parse-html-region (point) (point-max))))
 	   (box (car (dom-by-class dom "lyricbox"))))
       (kill-buffer (current-buffer))
-      (pop-to-buffer "*lyrics*")
-      (erase-buffer)
-      (shr-descend (cons 'div (loop for elem in (cdr box)
-				    when (memq (car elem) '(text br))
-				    collect elem)))
-      (goto-char (point-min)))))
+      (switch-to-buffer "*lyrics*")
+      (special-mode)
+      (let ((inhibit-read-only t))
+	(erase-buffer)
+	(shr-descend (cons 'div (loop for elem in (cdr box)
+				      when (memq (car elem) '(text br))
+				      collect elem)))
+	(goto-char (point-min))))))
       
 (provide 'lyric-wiki)
 
-;; lyric-wiki.el ends here
+;;; lyric-wiki.el ends here
