@@ -43,6 +43,7 @@
      (when (search-forward "\n\n" nil t)
        (let* ((data (libxml-parse-xml-region (point) (point-max)))
 	      (url (nth 2 (assq 'url data))))
+	 (kill-buffer (current-buffer))
 	 (url-retrieve url 'lyric-wiki-scrape-html))))))
 
 (defun lyric-wiki-encode (string)
@@ -53,6 +54,7 @@
     (let* ((dom (shr-transform-dom
 		 (libxml-parse-html-region (point) (point-max))))
 	   (box (car (dom-by-class dom "lyricbox"))))
+      (kill-buffer (current-buffer))
       (pop-to-buffer "*lyrics*")
       (erase-buffer)
       (shr-descend (cons 'div (loop for elem in (cdr box)
