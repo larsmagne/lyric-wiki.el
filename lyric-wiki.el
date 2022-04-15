@@ -62,9 +62,9 @@
       (special-mode)
       (let ((inhibit-read-only t))
 	(erase-buffer)
-	(shr-descend (cons 'div (loop for elem in (cdr box)
-				      when (memq (car elem) '(text br))
-				      collect elem)))
+	(shr-descend (cons 'div (cl-loop for elem in (cdr box)
+					 when (memq (car elem) '(text br))
+					 collect elem)))
 	(goto-char (point-min))))))
       
 (provide 'lyric-wiki)
