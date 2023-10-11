@@ -28,7 +28,6 @@
 
 ;;; Code:
 
-(require 'cl)
 (require 'mm-url)
 (require 'dom)
 (require 'eww)
@@ -54,8 +53,7 @@
 
 (defun lyric-wiki-scrape-html (&rest args)
   (when (search-forward "\n\n" nil t)
-    (let* ((dom (shr-transform-dom
-		 (libxml-parse-html-region (point) (point-max))))
+    (let* ((dom (libxml-parse-html-region (point) (point-max)))
 	   (box (car (dom-by-class dom "lyricbox"))))
       (kill-buffer (current-buffer))
       (switch-to-buffer "*lyrics*")
